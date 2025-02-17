@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Code Guesser Game</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="game-container">
+        <header>
+            <h1>Code Guesser</h1>
+            <div class="game-info">
+                <div id="round-info">Round: 1 / 6</div>
+                <div id="total-score">Total Score: 0</div>
+            </div>
+        </header>
+        <main>
+            <div class="code-and-hint">
+                <div class="code-card">
+                    <pre class="code-snippet" id="code-snippet">
+                        <!-- Code snippet will be inserted dynamically -->
+                    </pre>
+                </div>
+                <div id="hint-display" class="hint-display hidden">
+                    <button id="close-hint" class="close-hint">&times;</button>
+                    <h3>Hint</h3>
+                    <p id="hint-text"></p>
+                </div>
+            </div>
+            <div class="timer-container">
+                <div class="timer" id="timer">Time Left: 90s</div>
+                <div class="timer-bar-container">
+                    <div id="timer-bar"></div>
+                    <div id="bonus-section"></div>
+                    <span id="bonus-label">Bonus</span>
+                </div>
+            </div>
+            <div class="game-controls">
+                <div class="tags-input">
+                    <input type="text" id="tag-input" placeholder="Enter a tag" />
+                    <button onclick="addTag()">Add Tag</button>
+                </div>
+                <button id="hint-btn" onclick="getHint()">Get Hint</button>
+                <button class="submit-btn" onclick="submitTags()">Submit Tags</button>
+            </div>
+            <div id="tags-container"></div>
+        </main>
+        <div id="results" class="results-overlay hidden"></div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
+
