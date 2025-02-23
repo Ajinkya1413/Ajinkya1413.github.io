@@ -36,6 +36,266 @@ print(f"Test Accuracy: {acc:.4f}")`,
         lnum: "10-63"
     },
     {
+        code: `
+        // Go: Creating a Line Chart using go-echarts
+        package main
+    
+        import (
+            "github.com/go-echarts/go-echarts/v2/charts"
+            "github.com/go-echarts/go-echarts/v2/opts"
+            "github.com/go-echarts/go-echarts/v2/render"
+            "math/rand"
+            "net/http"
+            "os"
+        )
+    
+        func generateLineItems() []opts.LineData {
+            items := make([]opts.LineData, 0)
+            for i := 0; i < 7; i++ {
+                items = append(items, opts.LineData{Value: rand.Intn(100)})
+            }
+            return items
+        }
+    
+        func lineChartHandler(w http.ResponseWriter, _ *http.Request) {
+            line := charts.NewLine()
+            line.SetGlobalOptions(
+                charts.WithTitleOpts(opts.Title{
+                    Title:    "Go Line Chart Example",
+                    Subtitle: "Using go-echarts",
+                }),
+            )
+            line.SetXAxis([]string{"Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"}).
+                AddSeries("Category A", generateLineItems()).
+                AddSeries("Category B", generateLineItems())
+    
+            f, _ := os.Create("line.html")
+            line.Render(render.New(f))
+        }
+    
+        func main() {
+            http.HandleFunc("/", lineChartHandler)
+            http.ListenAndServe(":8080", nil)
+        }
+        `,
+        tags: ["Go", "Data Visualization", "go-echarts", "Web Development", "Backend"],
+        link: "https://github.com/go-echarts/examples/blob/master/examples/line.go",
+        lnum: "1"
+    },
+    {
+        code: `
+        # Perl: Web Scraping with LWP and HTML::TreeBuilder
+        use strict;
+        use warnings;
+        use LWP::UserAgent;
+        use HTML::TreeBuilder;
+    
+        # Initialize user agent
+        my $ua = LWP::UserAgent->new;
+        $ua->agent('Mozilla/5.0');
+    
+        # URL to scrape
+        my $url = 'http://example.com';
+    
+        # Make HTTP request
+        my $response = $ua->get($url);
+        die "Error: ", $response->status_line unless $response->is_success;
+    
+        # Parse HTML content
+        my $tree = HTML::TreeBuilder->new;
+        $tree->parse_content($response->decoded_content);
+    
+        # Extract information
+        my @links = $tree->look_down(_tag => 'a');
+        foreach my $link (@links) {
+            my $href = $link->attr('href');
+            my $text = $link->as_text;
+            print "Link: $text ($href)\n";
+        }
+    
+        # Clean up
+        $tree->delete;
+        `,
+        tags: ["Perl", "Web Scraping", "LWP", "HTML::TreeBuilder", "Scripting"],
+        link: "",
+        lnum: "1"
+    },
+    {
+        code: `
+        // Dart: Building a Simple Flutter App
+        import 'package:flutter/material.dart';
+    
+        void main() => runApp(MyApp());
+    
+        class MyApp extends StatelessWidget {
+            @override
+            Widget build(BuildContext context) {
+                return MaterialApp(
+                    title: 'Flutter Demo',
+                    theme: ThemeData(
+                        primarySwatch: Colors.blue,
+                    ),
+                    home: MyHomePage(),
+                );
+            }
+        }
+    
+        class MyHomePage extends StatefulWidget {
+            @override
+            _MyHomePageState createState() => _MyHomePageState();
+        }
+    
+        class _MyHomePageState extends State<MyHomePage> {
+            int _counter = 0;
+    
+            void _incrementCounter() {
+                setState(() {
+                    _counter++;
+                });
+            }
+    
+            @override
+            Widget build(BuildContext context) {
+                return Scaffold(
+                    appBar: AppBar(
+                        title: Text('Flutter Demo Home Page'),
+                    ),
+                    body: Center(
+                        child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: <Widget>[
+                                Text(
+                                    'You have pushed the button this many times:',
+                                ),
+                                Text(
+                                    '$_counter',
+                                    style: Theme.of(context).textTheme.headline4,
+                                ),
+                            ],
+                        ),
+                    ),
+                    floatingActionButton: FloatingActionButton(
+                        onPressed: _incrementCounter,
+                        tooltip: 'Increment',
+                        child: Icon(Icons.add),
+                    ),
+                );
+            }
+        }
+        `,
+        tags: ["Dart", "Flutter", "Mobile Development", "UI", "Counter App"],
+        link: "https://flutter.dev/docs/get-started/codelab",
+        lnum: "1"
+    },
+    {
+        code: `
+        % MATLAB: Solving a System of Linear Equations
+        % Coefficient matrix
+        A = [3, 2, -1;
+             2, -2, 4;
+            -1, 0.5, -1];
+    
+        % Right-hand side
+        B = [1;
+             -2;
+             0];
+    
+        % Solve the system
+        X = A \\ B;
+    
+        % Display the result
+        disp('Solution:');
+        disp(X);
+    
+        % Verify the solution
+        disp('Verification (A * X):');
+        disp(A * X);
+        `,
+        tags: ["MATLAB", "Linear Algebra", "Systems of Equations", "Numerical Computing", "Matrix Operations"],
+        link: "https://www.mathworks.com/help/matlab/ref/mldivide.html",
+        lnum: "1"
+    },
+    {
+        code: `
+        // Rust: Implementing a Simple Web Server with Actix-web
+        use actix_web::{web, App, HttpServer, Responder, HttpResponse};
+    
+        async fn index() -> impl Responder {
+            HttpResponse::Ok().body("Hello, Rust Web Server!")
+        }
+    
+        #[actix_web::main]
+        async fn main() -> std::io::Result<()> {
+            HttpServer::new(|| {
+                App::new()
+                    .route("/", web::get().to(index))
+            })
+            .bind("127.0.0.1:8080")?
+            .run()
+            .await
+        }
+        `,
+        tags: ["Rust", "Web Development", "Actix-web", "Backend", "HTTP Server"],
+        link: "https://github.com/actix/examples/blob/master/basics/src/main.rs",
+        lnum: "1"
+    },
+    {
+        code: `
+        # R: Performing Linear Regression and Plotting Results
+        # Load dataset
+        data(mtcars)
+    
+        # Fit linear model
+        model <- lm(mpg ~ wt + hp, data=mtcars)
+    
+        # Print summary
+        summary(model)
+    
+        # Predict values
+        predictions <- predict(model, mtcars)
+    
+        # Plot actual vs predicted
+        plot(mtcars$mpg, predictions, col="blue", 
+             xlab="Actual MPG", ylab="Predicted MPG", 
+             main="Actual vs Predicted MPG")
+        abline(0,1, col="red")
+        `,
+        tags: ["R", "Statistics", "Linear Regression", "Data Visualization", "Machine Learning"],
+        link: "https://www.rdocumentation.org/packages/stats/versions/3.6.2/topics/lm",
+        lnum: "1"
+    },
+    {
+        code: `
+        # Bash: Backup Script for MySQL Database
+        #!/bin/bash
+    
+        # Configuration
+        DB_NAME="my_database"
+        DB_USER="root"
+        DB_PASS="password"
+        BACKUP_DIR="/backups"
+        TIMESTAMP=\$(date +"%F-%H-%M-%S")
+        BACKUP_FILE="\$BACKUP_DIR/\$DB_NAME-\$TIMESTAMP.sql"
+    
+        # Create backup directory if it doesn't exist
+        mkdir -p \$BACKUP_DIR
+    
+        # Perform backup
+        mysqldump -u \$DB_USER -p\$DB_PASS \$DB_NAME > \$BACKUP_FILE
+    
+        # Compress backup
+        tar -czf \$BACKUP_FILE.tar.gz \$BACKUP_FILE
+    
+        # Remove uncompressed file
+        rm \$BACKUP_FILE
+    
+        echo "Backup completed: \$BACKUP_FILE.tar.gz"
+        `,
+        tags: ["Bash", "Database Script", "MySQL", "Backup", "Automation"],
+        link: "https://dev.mysql.com/doc/refman/8.0/en/mysqldump.html",
+        lnum: "1"
+    },
+    {
         code: String.raw`
           def fit(self,
         x=None,
@@ -607,6 +867,168 @@ function startGame() {
     }
   }, 1000)
 }
+
+// Add this near the top of your script.js with other variables
+const availableTags = [
+    "JavaScript",
+    "Python",
+	"TensorFlow",
+	"Machine Learning Model",
+	"Data Pipeline",
+	"Go",
+	"Data Visualization",
+	"go-echarts",
+	"Web Development",
+	"Backend",
+	"Perl",
+	"Web Scraping",
+	"LWP",
+	"HTML::TreeBuilder",
+	"Scripting",
+	"Dart",
+	"Flutter",
+	"Mobile Development",
+	"UI",
+	"Counter App",
+	"MATLAB",
+	"Linear Algebra",
+	"Systems of Equations",
+	"Numerical Computing",
+	"Matrix Operations",
+	"Rust",
+	"Actix-web",
+	"Backend",
+	"HTTP Server",
+	"R",
+	"Statistics",
+	"Linear Regression",
+	"Machine Learning",
+	"Bash",
+	"Database Script",
+	"MySQL",
+	"Backup",
+	"Automation",
+	"AI/ML",
+	"C++",
+	"SFML",
+	"Game Development",
+	"Graphics",
+	"Gaming",
+	"C#",
+	"LINQ",
+	"Arrays",
+	"Query",
+	"Node.js",
+	"HTTP Server",
+	"Networking",
+	"Network Security",
+	"Port Scanning",
+	"Threading",
+	"C",
+	"Network Security",
+	"Packet Sniffing",
+	"Libpcap",
+	"Go",
+	"Backend",
+	"API",
+	"Cloud Computing",
+	"Web Server",
+	"Java",
+	"Spring Boot",
+	"REST API",
+	"Web Development",
+	"C++",
+	"Qt",
+	"GUI",
+	"Desktop Application",
+	"Frontend",
+	"React",
+	"UI",
+	"SQL",
+	"E-commerce",
+	"Retail",
+	"Backend",
+	"PyTorch",
+	"Logistics",
+	"Inventory Management",
+	"SaaS",
+	"Database",
+	"E-commerce",
+	"Data Analytics"
+]; // You can replace these with your actual tags later
+
+// Add these new functions
+function filterTags() {
+    const input = document.getElementById('tag-input');
+    const filter = input.value.toLowerCase();
+    const dropdown = document.getElementById('tags-dropdown');
+    
+    // Clear previous suggestions
+    dropdown.innerHTML = '';
+    
+    if (filter.length === 0) {
+        dropdown.classList.add('hidden');
+        return;
+    }
+
+    // Filter tags
+    const filteredTags = availableTags.filter(tag => 
+        tag.toLowerCase().includes(filter)
+    );
+
+    // Show dropdown if we have suggestions
+    if (filteredTags.length > 0) {
+        dropdown.classList.remove('hidden');
+        filteredTags.forEach(tag => {
+            const div = document.createElement('div');
+            div.className = 'tag-suggestion';
+            div.textContent = tag;
+            div.onclick = () => selectTag(tag);
+            dropdown.appendChild(div);
+        });
+    } else {
+        dropdown.classList.add('hidden');
+    }
+}
+
+function selectTag(tag) {
+    const input = document.getElementById('tag-input');
+    input.value = tag;
+    document.getElementById('tags-dropdown').classList.add('hidden');
+    addTag(); // Automatically add the selected tag
+}
+
+// Modify your existing addTag function
+function addTag() {
+    const tag = tagInput.value.trim();
+
+    if (tag && userTags.length < 5 && !userTags.some(t => t.tag.toLowerCase() === tag.toLowerCase())) {
+        userTags.push({ tag, timeAdded: Math.floor((Date.now() - startTime) / 1000) });
+
+        const tagElement = document.createElement("span");
+        tagElement.textContent = tag;
+        tagElement.className = "tag fade-in";
+        tagsContainer.appendChild(tagElement);
+
+        // Clear input and dropdown
+        tagInput.value = "";
+        document.getElementById('tags-dropdown').classList.add('hidden');
+    }
+
+    if (userTags.length >= 5) {
+        tagInput.disabled = true;
+    }
+}
+
+// Add click event listener to close dropdown when clicking outside
+document.addEventListener('click', function(e) {
+    const dropdown = document.getElementById('tags-dropdown');
+    const input = document.getElementById('tag-input');
+    
+    if (!input.contains(e.target) && !dropdown.contains(e.target)) {
+        dropdown.classList.add('hidden');
+    }
+});
 
 function updateTimerBar(timeLeft) {
   const totalDuration = 90
