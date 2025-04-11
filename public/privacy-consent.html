@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Privacy Policy & Data Consent - Code Guesser Game</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .privacy-container {
+            width: 90%;
+            max-width: 900px;
+            margin: 20px auto;
+            background-color: var(--bg-color);
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+            padding: 30px;
+            color: var(--text-color);
+        }
+        
+        .privacy-header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .privacy-header h1 {
+            font-size: 2.2rem;
+            margin-bottom: 10px;
+        }
+        
+        .privacy-header p {
+            color: #aaa;
+            font-size: 1rem;
+        }
+        
+        .privacy-section {
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .privacy-section h2 {
+            color: var(--accent-color);
+            margin-bottom: 15px;
+            font-size: 1.5rem;
+        }
+        
+        .privacy-section h3 {
+            color: var(--md-sys-color-primary);
+            margin: 20px 0 10px;
+            font-size: 1.2rem;
+        }
+        
+        .privacy-section p, .privacy-section li {
+            line-height: 1.6;
+            margin-bottom: 10px;
+        }
+        
+        .privacy-section ul {
+            padding-left: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .data-category {
+            background-color: var(--card-bg);
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .data-category h4 {
+            color: var(--accent-color);
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .data-category h4::before {
+            content: "📊";
+            margin-right: 10px;
+        }
+        
+        .consent-form {
+            background-color: var(--card-bg);
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 30px;
+        }
+        
+        .consent-option {
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .consent-option:last-child {
+            border-bottom: none;
+        }
+        
+        .consent-option label {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        
+        .consent-option label input {
+            margin-right: 10px;
+            width: 20px;
+            height: 20px;
+        }
+        
+        .consent-option p {
+            margin-left: 30px;
+            font-size: 0.9rem;
+            color: #aaa;
+        }
+        
+        .consent-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 30px;
+            gap: 10px;
+        }
+        
+        .consent-buttons button {
+            padding: 12px 25px;
+            border-radius: 6px;
+            border: none;
+            font-weight: bold;
+            cursor: pointer;
+            flex: 1;
+        }
+        
+        .save-consent {
+            background-color: var(--accent-color);
+            color: white;
+        }
+        
+        .accept-all {
+            background-color: var(--accent-color);
+            color: white;
+        }
+        
+        .reject-non-essential {
+            background-color: #ff6b6b;
+            color: white;
+        }
+        
+        .cancel-consent {
+            background-color: transparent;
+            border: 1px solid var(--text-color) !important;
+            color: var(--text-color);
+        }
+        
+        .essential-data {
+            background-color: rgba(76, 175, 80, 0.1);
+            border-left: 4px solid var(--success-color);
+        }
+        
+        .consent-notification {
+            background-color: rgba(138, 107, 240, 0.1);
+            border-left: 4px solid var(--accent-color);
+            padding: 15px;
+            margin-top: 20px;
+            border-radius: 4px;
+        }
+        
+        @media (max-width: 600px) {
+            .privacy-container {
+                padding: 20px;
+            }
+            
+            .consent-buttons {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .consent-buttons button {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="privacy-container">
+        <div class="privacy-header">
+            <h1>Privacy Policy & Data Consent</h1>
+            <p>Last updated: May 2023</p>
+        </div>
+        
+        <div class="privacy-section">
+            <h2>Introduction</h2>
+            <p>Welcome to Code Guesser! This Privacy Policy explains how we collect, use, and protect your data when you use our game. We are committed to being transparent about our data practices and providing you with control over your information.</p>
+            
+            <div class="consent-notification">
+                <p>This game collects data to improve your experience and help us understand how the game is used. Some data collection is essential for the game to function properly, while other types require your explicit consent.</p>
+            </div>
+        </div>
+        
+        <div class="privacy-section">
+            <h2>Types of Data We Collect</h2>
+            
+            <div class="data-category">
+                <h4>User Gameplay Data</h4>
+                <p><strong>Collected without explicit consent (essential for game functionality):</strong></p>
+                <ul>
+                    <li>Number of games played</li>
+                    <li>Game duration per session</li>
+                    <li>Accuracy (correct vs. incorrect guesses)</li>
+                    <li>Time taken per guess</li>
+                    <li>Most frequently guessed tags/languages</li>
+                    <li>Game abandonment rate</li>
+                    <li>Snippet success rate</li>
+                </ul>
+                <p>This data helps us balance difficulty, identify issues, and improve the overall game experience.</p>
+            </div>
+            
+            <div class="data-category">
+                <h4>User Feedback & Reports</h4>
+                <p><strong>Collected with disclosure:</strong></p>
+                <ul>
+                    <li>Feedback form responses</li>
+                    <li>Mistake reports on snippets or tags</li>
+                </ul>
+                <p>This information helps us improve the game's accuracy and quality.</p>
+            </div>
+            
+            <div class="data-category">
+                <h4>Technical & Performance Data</h4>
+                <p><strong>Collected with disclosure (for game optimization):</strong></p>
+                <ul>
+                    <li>Device type (mobile, desktop, tablet)</li>
+                    <li>Browser & OS version</li>
+                    <li>Game load time & performance metrics</li>
+                    <li>Crash logs & errors</li>
+                </ul>
+                <p>This data helps us ensure the game runs smoothly across different devices and browsers.</p>
+            </div>
+            
+            <div class="data-category">
+                <h4>User Profile & Behavioral Data</h4>
+                <p><strong>Requires your explicit consent:</strong></p>
+                <ul>
+                    <li>User login & authentication data</li>
+                    <li>Region/location (general, non-specific)</li>
+                    <li>IP address (if stored for analytics)</li>
+                    <li>Clickstream data (e.g., button clicks, page navigation)</li>
+                </ul>
+                <p>This data helps us understand user behavior and improve the user experience.</p>
+            </div>
+        </div>
+        
+        <div class="privacy-section">
+            <h2>How We Use Your Data</h2>
+            <h3>Essential Game Functions</h3>
+            <ul>
+                <li>To operate and maintain the game</li>
+                <li>To create and manage user accounts</li>
+                <li>To track game progress and scores</li>
+                <li>To provide the leaderboard functionality</li>
+            </ul>
+            
+            <h3>Game Improvement</h3>
+            <ul>
+                <li>To understand how players interact with the game</li>
+                <li>To identify and fix bugs or issues</li>
+                <li>To optimize game performance</li>
+                <li>To improve code snippets and tag accuracy</li>
+            </ul>
+            
+            <h3>With Your Consent</h3>
+            <ul>
+                <li>To analyze detailed usage patterns</li>
+                <li>To personalize your experience</li>
+                <li>To conduct research to improve our services</li>
+            </ul>
+        </div>
+        
+        <div class="privacy-section">
+            <h2>Data Security</h2>
+            <p>We implement appropriate security measures to protect your data against unauthorized access, alteration, disclosure, or destruction. However, no method of transmission over the Internet or electronic storage is 100% secure, and we cannot guarantee absolute security.</p>
+        </div>
+        
+        <div class="privacy-section">
+            <h2>Your Rights</h2>
+            <p>Depending on your location, you may have various rights regarding your personal data, including:</p>
+            <ul>
+                <li>The right to access your data</li>
+                <li>The right to correct inaccurate data</li>
+                <li>The right to request deletion of your data</li>
+                <li>The right to withdraw consent</li>
+                <li>The right to lodge a complaint with a supervisory authority</li>
+            </ul>
+            <p>To exercise these rights, please contact us at privacy@codeguesser.com.</p>
+        </div>
+        
+        <div class="privacy-section">
+            <h2>Data Retention</h2>
+            <p>We retain your data only for as long as necessary to fulfill the purposes outlined in this Privacy Policy, unless a longer retention period is required by law.</p>
+        </div>
+        
+        <div class="privacy-section">
+            <h2>Your Consent Choices</h2>
+            <p>Please review and select which types of non-essential data collection you consent to. You can change these settings at any time.</p>
+            
+            <div class="consent-form">
+                <div class="consent-option essential-data">
+                    <label>
+                        <input type="checkbox" id="essential-data-consent" checked disabled> 
+                        <strong>Essential Game Functionality Data</strong>
+                    </label>
+                    <p>This includes data required for the core game experience, such as game progress, scores, and basic interaction data. This data is essential for the game to function properly.</p>
+                </div>
+                
+                <div class="consent-option">
+                    <label>
+                        <input type="checkbox" id="profile-data-consent"> 
+                        <strong>Profile Data Collection</strong>
+                    </label>
+                    <p>Allows us to collect and store data related to your user profile, including login history and account preferences.</p>
+                </div>
+                
+                <div class="consent-option">
+                    <label>
+                        <input type="checkbox" id="behavioral-data-consent"> 
+                        <strong>Behavioral Data Collection</strong>
+                    </label>
+                    <p>Allows us to analyze your in-game actions such as button clicks, navigation patterns, and feature usage to improve game usability.</p>
+                </div>
+                
+                <div class="consent-option">
+                    <label>
+                        <input type="checkbox" id="device-data-consent"> 
+                        <strong>Device & Technical Data Collection</strong>
+                    </label>
+                    <p>Allows us to collect information about your device, browser, operating system, and game performance to optimize the game for your setup.</p>
+                </div>
+                
+                <div class="consent-option">
+                    <label>
+                        <input type="checkbox" id="marketing-consent"> 
+                        <strong>Marketing Communications</strong>
+                    </label>
+                    <p>Allows us to send you occasional updates about new features, game improvements, or related products.</p>
+                </div>
+                
+                <div class="consent-buttons">
+                    <button class="reject-non-essential" id="reject-non-essential-btn">Reject Non-Essential</button>
+                    <button class="accept-all" id="accept-all-btn">Accept All</button>
+                    <button class="save-consent" id="save-consent">Accept Above Selected</button>
+                </div>
+            </div>
+        </div>
+        
+        <div class="privacy-section">
+            <h2>Changes to This Privacy Policy</h2>
+            <p>We may update this Privacy Policy from time to time. We will notify you of any changes by posting the new Privacy Policy on this page and updating the "Last updated" date at the top.</p>
+        </div>
+        
+        <div class="privacy-section">
+            <h2>Contact Us</h2>
+            <p>If you have any questions about this Privacy Policy or our data practices, please contact us at:</p>
+            <p>Email: privacy@codeguesser.com</p>
+        </div>
+    </div>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Check if token exists (user is logged in)
+            const token = localStorage.getItem('token');
+            if (!token) {
+                // If not logged in, redirect to login page
+                window.location.href = '/public/auth.html';
+                return;
+            }
+            
+            // Get references to buttons and checkboxes
+            const saveButton = document.getElementById('save-consent');
+            const acceptAllButton = document.getElementById('accept-all-btn');
+            const rejectNonEssentialButton = document.getElementById('reject-non-essential-btn');
+            const profileConsent = document.getElementById('profile-data-consent');
+            const behavioralConsent = document.getElementById('behavioral-data-consent');
+            const deviceConsent = document.getElementById('device-data-consent');
+            const marketingConsent = document.getElementById('marketing-consent');
+            
+            // Fetch user's existing consent settings
+            async function fetchConsentSettings() {
+                try {
+                    const response = await fetch('/api/game/consent', {
+                        headers: {
+                            'Authorization': `Bearer ${token}`
+                        }
+                    });
+                    
+                    const data = await response.json();
+                    
+                    if (data.success && data.data.consent) {
+                        const consent = data.data.consent;
+                        profileConsent.checked = consent.profile_data_consent;
+                        behavioralConsent.checked = consent.behavioral_data_consent;
+                        deviceConsent.checked = consent.device_data_consent;
+                        marketingConsent.checked = consent.marketing_consent;
+                    }
+                } catch (error) {
+                    console.error('Error fetching consent settings:', error);
+                }
+            }
+            
+            // Save consent settings
+            async function saveConsentSettings() {
+                try {
+                    const response = await fetch('/api/game/consent', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${token}`
+                        },
+                        body: JSON.stringify({
+                            profileDataConsent: profileConsent.checked,
+                            behavioralDataConsent: behavioralConsent.checked,
+                            deviceDataConsent: deviceConsent.checked,
+                            marketingConsent: marketingConsent.checked,
+                            consentVersion: '1.0' // Update this when privacy policy changes
+                        })
+                    });
+                    
+                    const data = await response.json();
+                    
+                    if (data.success) {
+                        alert('Your privacy preferences have been saved.');
+                        window.location.href = '/game.html';
+                    } else {
+                        alert('There was an error saving your preferences. Please try again.');
+                    }
+                } catch (error) {
+                    console.error('Error saving consent settings:', error);
+                    alert('There was an error connecting to the server. Please try again later.');
+                }
+            }
+            
+            // Accept all consent settings
+            function acceptAll() {
+                profileConsent.checked = true;
+                behavioralConsent.checked = true;
+                deviceConsent.checked = true;
+                marketingConsent.checked = true;
+                saveConsentSettings();
+            }
+            
+            // Reject non-essential consent settings
+            function rejectNonEssential() {
+                profileConsent.checked = false;
+                behavioralConsent.checked = false;
+                deviceConsent.checked = false;
+                marketingConsent.checked = false;
+                saveConsentSettings();
+            }
+            
+            // Event listeners
+            saveButton.addEventListener('click', saveConsentSettings);
+            acceptAllButton.addEventListener('click', acceptAll);
+            rejectNonEssentialButton.addEventListener('click', rejectNonEssential);
+            
+            // Fetch existing settings on page load
+            fetchConsentSettings();
+        });
+    </script>
+</body>
+</html> 

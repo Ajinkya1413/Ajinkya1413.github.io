@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Code Guesser - Login/Register</title>
+    <link rel="stylesheet" href="../styles.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #0F111A;
+            color: #FFFFFF;
+            margin: 0;
+            padding: 0;
+        }
+        
+        .page-container {
+            display: flex;
+            min-height: 100vh;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .game-rules-container {
+            flex: 1;
+            padding: 30px;
+            background-color: #1B1E31;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        
+        .auth-container {
+            flex: 1;
+            padding: 30px;
+            background-color: #1B1E31;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        
+        .game-rules {
+            background-color: #252B48;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        
+        .game-rules h2 {
+            color: #4CAF50;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .game-rules ul {
+            list-style-type: disc;
+            padding-left: 20px;
+        }
+        
+        .game-rules li {
+            margin-bottom: 10px;
+            line-height: 1.5;
+        }
+        
+        .auth-tabs {
+            display: flex;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #333;
+        }
+        
+        .auth-tab {
+            flex: 1;
+            padding: 10px;
+            text-align: center;
+            cursor: pointer;
+            color: #ccc;
+            transition: all 0.3s ease;
+        }
+        
+        .auth-tab.active {
+            color: #4CAF50;
+            border-bottom: 2px solid #4CAF50;
+        }
+        
+        .auth-form {
+            display: none;
+        }
+        
+        .auth-form.active {
+            display: block;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            color: #ccc;
+        }
+        
+        .form-group input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #333;
+            background-color: #2A2D42;
+            color: #fff;
+            border-radius: 4px;
+        }
+        
+        .auth-btn {
+            width: 100%;
+            padding: 12px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s ease;
+        }
+        
+        .auth-btn:hover {
+            background-color: #3e8e41;
+        }
+        
+        .guest-btn {
+            display: block;
+            text-align: center;
+            margin-top: 20px;
+            color: #ccc;
+            text-decoration: none;
+        }
+        
+        .guest-btn:hover {
+            color: #4CAF50;
+        }
+        
+        .error-message {
+            color: #ff6b6b;
+            margin-top: 10px;
+            text-align: center;
+            display: none;
+        }
+        
+        .success-message {
+            color: #4CAF50;
+            margin-top: 10px;
+            text-align: center;
+            display: none;
+        }
+        
+        /* Responsive design */
+        @media (max-width: 768px) {
+            .page-container {
+                flex-direction: column;
+            }
+            
+            .game-rules-container, 
+            .auth-container {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="page-container">
+        <!-- Game Rules on the Left Side -->
+        <div class="game-rules-container">
+            <div class="game-rules">
+                <h2>Game Rules</h2>
+                <ul>
+                    <li>You will be shown an actual open-source code from a random repository</li>
+                    <li>Try to guess the tags related to the code (Programming Language, Domain, etc.)</li>
+                    <li>50 points for each correct tag</li>
+                    <li>Extra 20 points if you guess correctly in the first 30 seconds</li>
+                    <li>Play six rounds and aim for the highest score!</li>
+                </ul>
+            </div>
+        </div>
+        
+        <!-- Auth Container on the Right Side -->
+        <div class="auth-container">
+            <h1 style="text-align: center; color: #4CAF50; margin-bottom: 30px;">Code Guesser</h1>
+            
+            <div class="auth-tabs">
+                <div class="auth-tab active" id="login-tab">Login</div>
+                <div class="auth-tab" id="register-tab">Register</div>
+            </div>
+            
+            <div class="auth-form active" id="login-form">
+                <div class="form-group">
+                    <label for="login-email">Email</label>
+                    <input type="email" id="login-email" placeholder="Enter your email">
+                </div>
+                <div class="form-group">
+                    <label for="login-password">Password</label>
+                    <input type="password" id="login-password" placeholder="Enter your password">
+                </div>
+                <button class="auth-btn" id="login-btn">Login</button>
+                <div class="error-message" id="login-error"></div>
+            </div>
+            
+            <div class="auth-form" id="register-form">
+                <div class="form-group">
+                    <label for="register-email">Email</label>
+                    <input type="email" id="register-email" placeholder="Enter your email">
+                </div>
+                <div class="form-group">
+                    <label for="register-password">Password</label>
+                    <input type="password" id="register-password" placeholder="Enter your password (min 6 characters)">
+                </div>
+                <div class="form-group">
+                    <label for="register-confirm-password">Confirm Password</label>
+                    <input type="password" id="register-confirm-password" placeholder="Confirm your password">
+                </div>
+                <button class="auth-btn" id="register-btn">Register</button>
+                <div class="error-message" id="register-error"></div>
+                <div class="success-message" id="register-success"></div>
+            </div>
+            
+            <a href="../game.html" class="guest-btn">Continue as Guest</a>
+        </div>
+    </div>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Tab switching
+            const loginTab = document.getElementById('login-tab');
+            const registerTab = document.getElementById('register-tab');
+            const loginForm = document.getElementById('login-form');
+            const registerForm = document.getElementById('register-form');
+            
+            loginTab.addEventListener('click', function() {
+                loginTab.classList.add('active');
+                registerTab.classList.remove('active');
+                loginForm.classList.add('active');
+                registerForm.classList.remove('active');
+            });
+            
+            registerTab.addEventListener('click', function() {
+                registerTab.classList.add('active');
+                loginTab.classList.remove('active');
+                registerForm.classList.add('active');
+                loginForm.classList.remove('active');
+            });
+            
+            // Login functionality
+            const loginBtn = document.getElementById('login-btn');
+            const loginError = document.getElementById('login-error');
+            
+            loginBtn.addEventListener('click', async function() {
+                const email = document.getElementById('login-email').value;
+                const password = document.getElementById('login-password').value;
+                
+                if (!email || !password) {
+                    loginError.textContent = 'Please enter both email and password';
+                    loginError.style.display = 'block';
+                    return;
+                }
+                
+                try {
+                    const response = await fetch('/api/auth/login', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ email, password })
+                    });
+                    
+                    const data = await response.json();
+                    
+                    if (data.success) {
+                        // Store token and user info
+                        localStorage.setItem('token', data.data.token);
+                        localStorage.setItem('user', JSON.stringify(data.data.user));
+                        
+                        // Redirect to game page
+                        window.location.href = '../game.html';
+                    } else {
+                        loginError.textContent = data.message || 'Login failed';
+                        loginError.style.display = 'block';
+                    }
+                } catch (error) {
+                    loginError.textContent = 'Error connecting to server';
+                    loginError.style.display = 'block';
+                    console.error('Login error:', error);
+                }
+            });
+            
+            // Registration functionality
+            const registerBtn = document.getElementById('register-btn');
+            const registerError = document.getElementById('register-error');
+            const registerSuccess = document.getElementById('register-success');
+            
+            registerBtn.addEventListener('click', async function() {
+                const email = document.getElementById('register-email').value;
+                const password = document.getElementById('register-password').value;
+                const confirmPassword = document.getElementById('register-confirm-password').value;
+                
+                // Reset messages
+                registerError.style.display = 'none';
+                registerSuccess.style.display = 'none';
+                
+                // Validation
+                if (!email || !password || !confirmPassword) {
+                    registerError.textContent = 'Please fill in all fields';
+                    registerError.style.display = 'block';
+                    return;
+                }
+                
+                if (password !== confirmPassword) {
+                    registerError.textContent = 'Passwords do not match';
+                    registerError.style.display = 'block';
+                    return;
+                }
+                
+                if (password.length < 6) {
+                    registerError.textContent = 'Password must be at least 6 characters';
+                    registerError.style.display = 'block';
+                    return;
+                }
+                
+                try {
+                    const response = await fetch('/api/auth/register', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ email, password })
+                    });
+                    
+                    const data = await response.json();
+                    
+                    if (data.success) {
+                        // Registration successful
+                        registerSuccess.textContent = 'Registration successful! You can now login.';
+                        registerSuccess.style.display = 'block';
+                        
+                        // Clear form
+                        document.getElementById('register-email').value = '';
+                        document.getElementById('register-password').value = '';
+                        document.getElementById('register-confirm-password').value = '';
+                        
+                        // Switch to login tab after 2 seconds
+                        setTimeout(() => {
+                            loginTab.click();
+                        }, 2000);
+                    } else {
+                        registerError.textContent = data.message || 'Registration failed';
+                        registerError.style.display = 'block';
+                    }
+                } catch (error) {
+                    registerError.textContent = 'Error connecting to server';
+                    registerError.style.display = 'block';
+                    console.error('Registration error:', error);
+                }
+            });
+            
+            // Check if user is already logged in
+            const token = localStorage.getItem('token');
+            if (token) {
+                window.location.href = '../game.html';
+            }
+        });
+    </script>
+</body>
+</html> 

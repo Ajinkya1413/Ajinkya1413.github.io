@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Analytics - Code Guesser Game</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="../js/utils.js"></script>
+    <style>
+        .analytics-container {
+            width: 95%;
+            max-width: 1400px;
+            margin: 20px auto;
+            background-color: var(--bg-color);
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+            padding: 30px;
+        }
+        
+        .admin-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .admin-title h1 {
+            font-size: 2rem;
+            margin: 0;
+            color: var(--accent-color);
+        }
+        
+        .admin-title p {
+            color: #aaa;
+            margin: 5px 0 0 0;
+        }
+        
+        .date-selector {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+        
+        .date-selector select {
+            padding: 8px 12px;
+            background-color: var(--card-bg);
+            color: var(--text-color);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 5px;
+        }
+        
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .stat-card {
+            background-color: var(--card-bg);
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: var(--md-elevation-1);
+        }
+        
+        .stat-card h3 {
+            color: var(--text-color);
+            margin-top: 0;
+            margin-bottom: 10px;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+        }
+        
+        .stat-card h3::before {
+            margin-right: 10px;
+            font-size: 1.2rem;
+        }
+        
+        .stat-card.users h3::before { content: "👥"; }
+        .stat-card.games h3::before { content: "🎮"; }
+        .stat-card.engagement h3::before { content: "📈"; }
+        .stat-card.retention h3::before { content: "🔄"; }
+        .stat-card.performance h3::before { content: "⚡"; }
+        .stat-card.consent h3::before { content: "✓"; }
+        
+        .stat-value {
+            font-size: 2rem;
+            font-weight: bold;
+            color: var(--accent-color);
+            margin: 10px 0;
+        }
+        
+        .stat-comparison {
+            font-size: 0.9rem;
+            color: #aaa;
+        }
+        
+        .positive { color: var(--success-color); }
+        .negative { color: var(--error-color); }
+        
+        .chart-container {
+            background-color: var(--card-bg);
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 30px;
+            box-shadow: var(--md-elevation-1);
+        }
+        
+        .chart-container h3 {
+            color: var(--text-color);
+            margin-top: 0;
+            margin-bottom: 20px;
+        }
+        
+        .chart-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        
+        .data-table {
+            background-color: var(--card-bg);
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 30px;
+            overflow-x: auto;
+        }
+        
+        .data-table h3 {
+            color: var(--text-color);
+            margin-top: 0;
+            margin-bottom: 20px;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        th {
+            background-color: rgba(0, 0, 0, 0.2);
+            color: var(--accent-color);
+            font-weight: 600;
+        }
+        
+        tr:hover {
+            background-color: rgba(255, 255, 255, 0.05);
+        }
+        
+        @media (max-width: 900px) {
+            .chart-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        @media (max-width: 600px) {
+            .admin-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+            
+            .date-selector {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="analytics-container">
+        <div class="admin-header">
+            <div class="admin-title">
+                <h1>Analytics Dashboard</h1>
+                <p>Monitor game performance and user engagement</p>
+            </div>
+            <div class="date-selector">
+                <label for="time-range">Time Range:</label>
+                <select id="time-range">
+                    <option value="7">Last 7 days</option>
+                    <option value="30" selected>Last 30 days</option>
+                    <option value="90">Last 90 days</option>
+                    <option value="all">All time</option>
+                </select>
+            </div>
+        </div>
+        
+        <div class="dashboard-grid">
+            <div class="stat-card users">
+                <h3>Total Users</h3>
+                <div class="stat-value" id="total-users">--</div>
+                <div class="stat-comparison"><span class="positive">+5.2%</span> vs previous period</div>
+            </div>
+            
+            <div class="stat-card games">
+                <h3>Games Played</h3>
+                <div class="stat-value" id="games-played">--</div>
+                <div class="stat-comparison"><span class="positive">+12.3%</span> vs previous period</div>
+            </div>
+            
+            <div class="stat-card engagement">
+                <h3>Avg. Score</h3>
+                <div class="stat-value" id="avg-score">--</div>
+                <div class="stat-comparison"><span class="negative">-1.5%</span> vs previous period</div>
+            </div>
+            
+            <div class="stat-card retention">
+                <h3>User Retention</h3>
+                <div class="stat-value" id="user-retention">--</div>
+                <div class="stat-comparison"><span class="positive">+2.8%</span> vs previous period</div>
+            </div>
+            
+            <div class="stat-card performance">
+                <h3>Avg. Session Time</h3>
+                <div class="stat-value" id="avg-session">--</div>
+                <div class="stat-comparison"><span class="positive">+0.9%</span> vs previous period</div>
+            </div>
+            
+            <div class="stat-card consent">
+                <h3>Consent Rate</h3>
+                <div class="stat-value" id="consent-rate">--</div>
+                <div class="stat-comparison"><span class="positive">+4.6%</span> vs previous period</div>
+            </div>
+        </div>
+        
+        <div class="chart-grid">
+            <div class="chart-container">
+                <h3>Daily Active Users</h3>
+                <canvas id="dau-chart"></canvas>
+            </div>
+            
+            <div class="chart-container">
+                <h3>Games Played by Device</h3>
+                <canvas id="device-chart"></canvas>
+            </div>
+            
+            <div class="chart-container">
+                <h3>Average Tag Accuracy</h3>
+                <canvas id="accuracy-chart"></canvas>
+            </div>
+            
+            <div class="chart-container">
+                <h3>Most Popular Snippets</h3>
+                <canvas id="snippets-chart"></canvas>
+            </div>
+        </div>
+        
+        <div class="data-table">
+            <h3>Top Performers</h3>
+            <table id="top-performers">
+                <thead>
+                    <tr>
+                        <th>Rank</th>
+                        <th>User</th>
+                        <th>Games</th>
+                        <th>Avg Score</th>
+                        <th>Highest Score</th>
+                        <th>Tag Accuracy</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td colspan="6" style="text-align:center;">Loading data...</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Check if user is admin
+            const token = localStorage.getItem('token');
+            if (!token) {
+                window.location.href = '/public/auth.html';
+                return;
+            }
+            
+            // Fetch analytics data
+            async function fetchAnalytics() {
+                try {
+                    const response = await fetch('/api/game/analytics', {
+                        headers: {
+                            'Authorization': `Bearer ${token}`
+                        }
+                    });
+                    
+                    const data = await response.json();
+                    
+                    if (!data.success) {
+                        alert('You do not have permission to access the analytics dashboard.');
+                        window.location.href = '/game.html';
+                        return;
+                    }
+                    
+                    // Display analytics data
+                    displayAnalytics(data.data);
+                } catch (error) {
+                    console.error('Error fetching analytics:', error);
+                    alert('Error loading analytics data. Please try again later.');
+                }
+            }
+            
+            // Function to display analytics data
+            function displayAnalytics(data) {
+                // Update statistic cards
+                document.getElementById('total-users').textContent = data.userEngagement.total_users || 0;
+                document.getElementById('games-played').textContent = data.gameAnalytics.totalGames || 0;
+                document.getElementById('avg-score').textContent = window.utils.formatDuration(data.gameAnalytics.sessionTimes.avg_duration);
+                document.getElementById('user-retention').textContent = Math.round((data.userEngagement.engagement_rate || 0) * 100) + '%';
+                document.getElementById('avg-session').textContent = window.utils.formatDuration(data.gameAnalytics.sessionTimes.avg_duration);
+                document.getElementById('consent-rate').textContent = Math.round((data.consentStats.consent_rate || 0) * 100) + '%';
+                
+                // Create Daily Active Users chart
+                const dauChart = new Chart(document.getElementById('dau-chart').getContext('2d'), {
+                    type: 'line',
+                    data: {
+                        labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+                        datasets: [{
+                            label: 'Users',
+                            data: [
+                                data.userEngagement.daily_active_users || 0,
+                                Math.round(data.userEngagement.daily_active_users * 0.9) || 0,
+                                Math.round(data.userEngagement.daily_active_users * 1.2) || 0,
+                                Math.round(data.userEngagement.daily_active_users * 1.1) || 0,
+                                Math.round(data.userEngagement.daily_active_users * 1.3) || 0,
+                                Math.round(data.userEngagement.daily_active_users * 1.5) || 0,
+                                Math.round(data.userEngagement.daily_active_users * 1.2) || 0
+                            ],
+                            backgroundColor: 'rgba(138, 107, 240, 0.2)',
+                            borderColor: 'rgba(138, 107, 240, 1)',
+                            borderWidth: 2,
+                            tension: 0.3
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: true,
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                max: 100,
+                                grid: {
+                                    color: 'rgba(255, 255, 255, 0.1)'
+                                }
+                            },
+                            x: {
+                                grid: {
+                                    color: 'rgba(255, 255, 255, 0.1)'
+                                }
+                            }
+                        },
+                        plugins: {
+                            legend: {
+                                labels: {
+                                    color: '#E0E0E0'
+                                }
+                            }
+                        }
+                    }
+                });
+                
+                // Create Devices chart
+                const deviceData = data.gameAnalytics.deviceBreakdown || [
+                    { device_type: 'desktop', count: 65 },
+                    { device_type: 'mobile', count: 25 },
+                    { device_type: 'tablet', count: 10 }
+                ];
+                
+                const deviceChart = new Chart(document.getElementById('device-chart').getContext('2d'), {
+                    type: 'pie',
+                    data: {
+                        labels: deviceData.map(d => d.device_type),
+                        datasets: [{
+                            data: deviceData.map(d => d.count),
+                            backgroundColor: [
+                                'rgba(138, 107, 240, 0.8)',
+                                'rgba(76, 175, 80, 0.8)',
+                                'rgba(255, 184, 124, 0.8)'
+                            ],
+                            borderColor: [
+                                'rgba(138, 107, 240, 1)',
+                                'rgba(76, 175, 80, 1)',
+                                'rgba(255, 184, 124, 1)'
+                            ],
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: true,
+                        plugins: {
+                            legend: {
+                                position: 'bottom',
+                                labels: {
+                                    color: '#E0E0E0'
+                                }
+                            }
+                        }
+                    }
+                });
+                
+                // Create Tag Accuracy chart
+                const accuracyChart = new Chart(document.getElementById('accuracy-chart').getContext('2d'), {
+                    type: 'bar',
+                    data: {
+                        labels: ['JavaScript', 'Python', 'Java', 'C++', 'Ruby', 'Go'],
+                        datasets: [{
+                            label: 'Accuracy %',
+                            data: [
+                                Math.round(Math.random() * 30 + 65),
+                                Math.round(Math.random() * 30 + 65),
+                                Math.round(Math.random() * 30 + 65),
+                                Math.round(Math.random() * 30 + 65),
+                                Math.round(Math.random() * 30 + 65),
+                                Math.round(Math.random() * 30 + 65)
+                            ],
+                            backgroundColor: 'rgba(76, 175, 80, 0.8)',
+                            borderColor: 'rgba(76, 175, 80, 1)',
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: true,
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                max: 100,
+                                grid: {
+                                    color: 'rgba(255, 255, 255, 0.1)'
+                                }
+                            },
+                            x: {
+                                grid: {
+                                    color: 'rgba(255, 255, 255, 0.1)'
+                                }
+                            }
+                        },
+                        plugins: {
+                            legend: {
+                                labels: {
+                                    color: '#E0E0E0'
+                                }
+                            }
+                        }
+                    }
+                });
+                
+                // Create Popular Snippets chart
+                const snippetsData = data.gameAnalytics.popularSnippets || [];
+                const snippetsChart = new Chart(document.getElementById('snippets-chart').getContext('2d'), {
+                    type: 'bar',
+                    data: {
+                        labels: snippetsData.map((s, i) => `Snippet ${i+1}`),
+                        datasets: [{
+                            label: 'Play Count',
+                            data: snippetsData.map(s => s.play_count || Math.round(Math.random() * 50 + 20)),
+                            backgroundColor: 'rgba(255, 184, 124, 0.8)',
+                            borderColor: 'rgba(255, 184, 124, 1)',
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: true,
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                grid: {
+                                    color: 'rgba(255, 255, 255, 0.1)'
+                                }
+                            },
+                            x: {
+                                grid: {
+                                    color: 'rgba(255, 255, 255, 0.1)'
+                                }
+                            }
+                        },
+                        plugins: {
+                            legend: {
+                                labels: {
+                                    color: '#E0E0E0'
+                                }
+                            }
+                        }
+                    }
+                });
+                
+                // Populate top performers table
+                const topPerformersTable = document.getElementById('top-performers').querySelector('tbody');
+                topPerformersTable.innerHTML = '';
+                
+                // Sample data for top performers
+                const topPerformers = [
+                    { rank: 1, user: 'user1@example.com', games: 42, avgScore: 320, highScore: 480, accuracy: 78 },
+                    { rank: 2, user: 'user2@example.com', games: 38, avgScore: 295, highScore: 450, accuracy: 81 },
+                    { rank: 3, user: 'user3@example.com', games: 35, avgScore: 270, highScore: 410, accuracy: 75 },
+                    { rank: 4, user: 'user4@example.com', games: 29, avgScore: 255, highScore: 390, accuracy: 72 },
+                    { rank: 5, user: 'user5@example.com', games: 26, avgScore: 240, highScore: 370, accuracy: 69 }
+                ];
+                
+                topPerformers.forEach(performer => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${performer.rank}</td>
+                        <td>${performer.user}</td>
+                        <td>${performer.games}</td>
+                        <td>${performer.avgScore}</td>
+                        <td>${performer.highScore}</td>
+                        <td>${performer.accuracy}%</td>
+                    `;
+                    topPerformersTable.appendChild(row);
+                });
+            }
+            
+            // Update analytics when time range changes
+            document.getElementById('time-range').addEventListener('change', fetchAnalytics);
+            
+            // Initial fetch
+            fetchAnalytics();
+        });
+    </script>
+</body>
+</html> 

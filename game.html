@@ -3,18 +3,115 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Code Guesser Game New</title>
+    <title>Code Guesser Game - UPDATED VERSION</title>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
+    <style>
+        /* Removed user-menu styles as they are now in the CSS file */
+        
+        .report-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .report-content {
+            background-color: #1B1E31;
+            padding: 30px;
+            border-radius: 10px;
+            width: 400px;
+            max-width: 90%;
+        }
+        
+        .report-content h2 {
+            color: #ff6b6b;
+            margin-top: 0;
+        }
+        
+        .report-options {
+            margin: 20px 0;
+        }
+        
+        .report-option {
+            margin: 10px 0;
+        }
+        
+        .report-option label {
+            margin-left: 10px;
+            color: #ccc;
+        }
+        
+        .report-textarea {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            background-color: #2A2D42;
+            border: 1px solid #333;
+            color: #fff;
+            border-radius: 4px;
+            resize: vertical;
+            min-height: 80px;
+        }
+        
+        .report-buttons {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+        }
+        
+        .report-submit {
+            background-color: #ff6b6b;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        
+        .report-cancel {
+            background-color: transparent;
+            color: #ccc;
+            border: 1px solid #ccc;
+            padding: 8px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        
+        .feedback-btn {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            z-index: 100;
+        }
+    </style>
 </head>
 <body>
     <div class="game-container">
         <header>
             <h1>Code Guesser</h1>
             <div class="game-info">
-                <div id="player-info">Player ID: <span id="current-player-id"></span></div>
-                <div id="round-info">Round: 1 / 6</div>
-                <div id="total-score">Total Score: 0</div>
+                <div id="player-info" class="player-info">Player ID:Guest</div>
+                <div id="round-info" class="round-info">Round:1/6</div>
+                <div id="total-score" class="total-score">Total Score:0</div>
+            </div>
+            <div class="user-menu">
+                <div class="user-info" id="user-email"></div>
+                <button class="logout-btn" id="logout-btn">Logout</button>
+                <button class="register-btn" id="register-btn">Register</button>
+                <button class="report-btn" id="report-btn">Report Issue</button>
             </div>
         </header>
         <main>
@@ -41,21 +138,424 @@
             <div class="game-controls">
                 <div class="tags-input">
                     <div class="input-with-dropdown">
-                        <input type="text" id="tag-input" placeholder="Enter a tag" autocomplete="off" onkeyup="filterTags()"/>
+                        <input type="text" id="tag-input" placeholder="Enter programming concepts, algorithms, or languages..." autocomplete="off"/>
                         <div id="tags-dropdown" class="tags-dropdown hidden">
                             <!-- Suggestions will be populated here -->
                         </div>
                     </div>
-                    <button onclick="addTag()">Add Tag</button>
+                    <button id="add-tag-btn">Add Tag</button>
                 </div>
-                <button id="hint-btn" onclick="getHint()">Get Hint</button>
-                <button class="submit-btn" onclick="submitTags()">Submit Tags</button>
+                <button id="hint-btn">Get Hint</button>
+                <button id="submit-btn" class="submit-btn">Submit Tags</button>
             </div>
             <div id="tags-container"></div>
         </main>
         <div id="results" class="results-overlay hidden"></div>
     </div>
+    
+    <!-- Report Issue Modal -->
+    <div id="report-modal" class="report-modal">
+        <div class="report-content">
+            <h2>Report an Issue</h2>
+            <p>Please select the reason for your report:</p>
+            
+            <div class="report-options">
+                <div class="report-option">
+                    <input type="radio" id="wrong-tags" name="report-reason" value="wrong-tags">
+                    <label for="wrong-tags">Incorrect tags</label>
+                </div>
+                <div class="report-option">
+                    <input type="radio" id="invalid-snippet" name="report-reason" value="invalid-snippet">
+                    <label for="invalid-snippet">Invalid code snippet</label>
+                </div>
+                <div class="report-option">
+                    <input type="radio" id="missing-tags" name="report-reason" value="missing-tags">
+                    <label for="missing-tags">Missing important tags</label>
+                </div>
+                <div class="report-option">
+                    <input type="radio" id="other-reason" name="report-reason" value="other">
+                    <label for="other-reason">Other</label>
+                </div>
+            </div>
+            
+            <textarea id="report-details" class="report-textarea" placeholder="Please provide additional details about the issue..."></textarea>
+            
+            <div class="report-buttons">
+                <button id="report-cancel" class="report-cancel">Cancel</button>
+                <button id="report-submit" class="report-submit">Submit Report</button>
+            </div>
+        </div>
+    </div>
+    
     <script src="script.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Check if user is logged in
+            const token = localStorage.getItem('token');
+            const user = JSON.parse(localStorage.getItem('user') || '{}');
+            
+            // Update UI based on login status
+            if (token && user.email) {
+                document.getElementById('user-email').textContent = user.email;
+                document.getElementById('player-info').textContent = `Player ID:${user.email}`;
+                document.getElementById('logout-btn').style.display = 'block';
+                document.getElementById('register-btn').style.display = 'none';
+                
+                // Check if user has consented to privacy policy
+                checkUserConsent();
+            } else {
+                document.getElementById('user-email').textContent = 'Guest User';
+                document.getElementById('player-info').textContent = `Player ID:Guest`;
+                document.getElementById('logout-btn').style.display = 'none';
+                document.getElementById('register-btn').style.display = 'block';
+            }
+            
+            // Function to check user consent status
+            async function checkUserConsent() {
+                try {
+                    const response = await fetch('/api/game/consent', {
+                        headers: {
+                            'Authorization': `Bearer ${token}`
+                        }
+                    });
+                    
+                    const data = await response.json();
+                    
+                    // If user hasn't consented yet, show privacy notice
+                    if (data.success && (!data.data.consent.has_consented || !data.data.consent.consent_version)) {
+                        showPrivacyNotice();
+                    }
+                } catch (error) {
+                    console.error('Error checking consent status:', error);
+                }
+            }
+            
+            // Function to show privacy notice
+            function showPrivacyNotice() {
+                // Create privacy notice element
+                const noticeElement = document.createElement('div');
+                noticeElement.className = 'privacy-notice';
+                noticeElement.style.position = 'fixed';
+                noticeElement.style.bottom = '0';
+                noticeElement.style.left = '0';
+                noticeElement.style.width = '100%';
+                noticeElement.style.padding = '15px';
+                noticeElement.style.backgroundColor = 'rgba(27, 30, 49, 0.95)';
+                noticeElement.style.color = '#E0E0E0';
+                noticeElement.style.boxShadow = '0 -2px 10px rgba(0, 0, 0, 0.2)';
+                noticeElement.style.zIndex = '1000';
+                noticeElement.style.display = 'flex';
+                noticeElement.style.justifyContent = 'space-between';
+                noticeElement.style.alignItems = 'center';
+                
+                noticeElement.innerHTML = `
+                    <div style="flex: 1; padding-right: 20px;">
+                        <strong style="color: var(--accent-color);">Privacy Settings Required</strong>
+                        <p style="margin: 5px 0;">We collect data to improve your game experience. Please review our privacy policy and set your preferences.</p>
+                    </div>
+                    <div style="display: flex; gap: 10px;">
+                        <button id="privacy-review-btn" style="background-color: transparent; color: var(--text-color); border: 1px solid var(--text-color); padding: 10px 15px; border-radius: 5px; cursor: pointer;">Review Settings</button>
+                        <button id="privacy-accept-all-btn" style="background-color: var(--accent-color); color: white; border: none; padding: 10px 15px; border-radius: 5px; cursor: pointer;">Accept All</button>
+                    </div>
+                `;
+                
+                document.body.appendChild(noticeElement);
+                
+                // Add event listener to review settings button
+                document.getElementById('privacy-review-btn').addEventListener('click', function() {
+                    window.location.href = '/public/privacy-consent.html';
+                });
+                
+                // Add event listener to accept all button
+                document.getElementById('privacy-accept-all-btn').addEventListener('click', async function() {
+                    try {
+                        const response = await fetch('/api/game/consent', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'Authorization': `Bearer ${token}`
+                            },
+                            body: JSON.stringify({
+                                profileDataConsent: true,
+                                behavioralDataConsent: true,
+                                deviceDataConsent: true,
+                                marketingConsent: true,
+                                consentVersion: '1.0' // Update this when privacy policy changes
+                            })
+                        });
+                        
+                        const data = await response.json();
+                        
+                        if (data.success) {
+                            // Remove the privacy notice
+                            document.body.removeChild(noticeElement);
+                        } else {
+                            alert('Error saving privacy preferences. Please try again.');
+                        }
+                    } catch (error) {
+                        console.error('Error saving consent settings:', error);
+                        alert('Error connecting to server. Please try again later.');
+                    }
+                });
+            }
+            
+            // Logout functionality
+            document.getElementById('logout-btn').addEventListener('click', function() {
+                localStorage.removeItem('token');
+                localStorage.removeItem('user');
+                document.getElementById('user-email').textContent = 'Guest User';
+                document.getElementById('player-info').textContent = 'Player ID:Guest';
+                document.getElementById('logout-btn').style.display = 'none';
+                document.getElementById('register-btn').style.display = 'block';
+                window.location.href = '/public/auth.html';
+            });
+            
+            // Register functionality
+            document.getElementById('register-btn').addEventListener('click', function() {
+                window.location.href = '/public/auth.html?action=register';
+            });
+            
+            // Report Issue Modal
+            const reportModal = document.getElementById('report-modal');
+            const reportBtn = document.getElementById('report-btn');
+            const reportCancel = document.getElementById('report-cancel');
+            const reportSubmit = document.getElementById('report-submit');
+            
+            reportBtn.addEventListener('click', function() {
+                reportModal.style.display = 'flex';
+            });
+            
+            reportCancel.addEventListener('click', function() {
+                reportModal.style.display = 'none';
+                // Reset form
+                const checkedInput = document.querySelector('input[name="report-reason"]:checked');
+                if (checkedInput) {
+                    checkedInput.checked = false;
+                }
+                document.getElementById('report-details').value = '';
+            });
+            
+            reportSubmit.addEventListener('click', async function() {
+                const checkedInput = document.querySelector('input[name="report-reason"]:checked');
+                const selectedReason = checkedInput ? checkedInput.value : undefined;
+                const details = document.getElementById('report-details').value;
+                
+                if (!selectedReason) {
+                    alert('Please select a reason for your report');
+                    return;
+                }
+                
+                // Get current snippet ID (this will depend on how you're storing the current snippet)
+                const snippetId = window.currentSnippetId || 1; // Replace with actual snippet ID
+                
+                try {
+                    const headers = {
+                        'Content-Type': 'application/json'
+                    };
+                    
+                    if (token) {
+                        headers['Authorization'] = `Bearer ${token}`;
+                    }
+                    
+                    const response = await fetch(`/api/snippets/${snippetId}/report`, {
+                        method: 'POST',
+                        headers,
+                        body: JSON.stringify({
+                            reason: `${selectedReason}${details ? ': ' + details : ''}`
+                        })
+                    });
+                    
+                    const data = await response.json();
+                    
+                    if (data.success) {
+                        alert('Thank you for your report. We will review it shortly.');
+                        reportModal.style.display = 'none';
+                        // Reset form
+                        const checkedInput = document.querySelector('input[name="report-reason"]:checked');
+                        if (checkedInput) {
+                            checkedInput.checked = false;
+                        }
+                        document.getElementById('report-details').value = '';
+                    } else {
+                        alert('Error submitting report: ' + (data.message || 'Unknown error'));
+                    }
+                } catch (error) {
+                    console.error('Error submitting report:', error);
+                    alert('Error connecting to server. Please try again later.');
+                }
+            });
+            
+            // Add device info collection for analytics
+            window.collectDeviceInfo = function() {
+                const deviceInfo = {
+                    deviceType: detectDeviceType(),
+                    browser: detectBrowser(),
+                    os: detectOS(),
+                    screenResolution: `${window.screen.width}x${window.screen.height}`,
+                    windowSize: `${window.innerWidth}x${window.innerHeight}`,
+                    pixelRatio: window.devicePixelRatio
+                };
+                
+                return deviceInfo;
+            };
+            
+            // Helper functions for device detection
+            function detectDeviceType() {
+                const ua = navigator.userAgent;
+                if (/(tablet|ipad|playbook|silk)|(android(?!.*mobi))/i.test(ua)) {
+                    return 'tablet';
+                } else if (/Mobile|Android|iP(hone|od)|IEMobile|BlackBerry|Kindle|Silk-Accelerated|(hpw|web)OS|Opera M(obi|ini)/.test(ua)) {
+                    return 'mobile';
+                }
+                return 'desktop';
+            }
+            
+            function detectBrowser() {
+                const ua = navigator.userAgent;
+                if (ua.indexOf('Chrome') > -1) return 'Chrome';
+                if (ua.indexOf('Firefox') > -1) return 'Firefox';
+                if (ua.indexOf('Safari') > -1) return 'Safari';
+                if (ua.indexOf('Edge') > -1) return 'Edge';
+                if (ua.indexOf('MSIE') > -1 || ua.indexOf('Trident/') > -1) return 'Internet Explorer';
+                return 'Unknown';
+            }
+            
+            function detectOS() {
+                const ua = navigator.userAgent;
+                if (ua.indexOf('Windows') > -1) return 'Windows';
+                if (ua.indexOf('Mac') > -1) return 'MacOS';
+                if (ua.indexOf('Linux') > -1) return 'Linux';
+                if (ua.indexOf('Android') > -1) return 'Android';
+                if (ua.indexOf('iOS') > -1 || ua.indexOf('iPhone') > -1 || ua.indexOf('iPad') > -1) return 'iOS';
+                return 'Unknown';
+            }
+            
+            // Enhanced game session saving
+            window.saveGameSession = async function(score, roundsData) {
+                try {
+                    const deviceInfo = window.collectDeviceInfo();
+                    const headers = {
+                        'Content-Type': 'application/json'
+                    };
+                    
+                    if (token) {
+                        headers['Authorization'] = `Bearer ${token}`;
+                    }
+                    
+                    const response = await fetch('/api/game/session', {
+                        method: 'POST',
+                        headers,
+                        body: JSON.stringify({ 
+                            finalScore: score, 
+                            roundsData,
+                            deviceInfo,
+                            completedGame: true,
+                            hintsUsed: window.hintsUsed || 0,
+                            difficultyLevel: 2
+                        })
+                    });
+                    
+                    const data = await response.json();
+                    
+                    // If successful and we have consent, log performance data
+                    if (data.success && token) {
+                        try {
+                            // Get performance data
+                            const performanceData = {
+                                sessionId: data.data.session.id,
+                                pageLoadTimeMs: window.performance && window.performance.timing ? 
+                                    (window.performance.timing.loadEventEnd - window.performance.timing.navigationStart) : null,
+                                networkType: navigator.connection ? navigator.connection.effectiveType : null,
+                                screenResolution: deviceInfo.screenResolution,
+                                memoryUsage: navigator.deviceMemory ? `${navigator.deviceMemory}GB` : null
+                            };
+                            
+                            // Save technical data
+                            await fetch('/api/game/tech-data', {
+                                method: 'POST',
+                                headers,
+                                body: JSON.stringify(performanceData)
+                            });
+                        } catch (perfError) {
+                            console.error('Error logging performance data:', perfError);
+                        }
+                    }
+                    
+                    return data.success;
+                } catch (error) {
+                    console.error('Error saving game session:', error);
+                    return false;
+                }
+            };
+            
+            // Log user action (for consented users)
+            window.logUserAction = async function(actionType, actionValue, roundNumber) {
+                // Only log actions if user is logged in
+                if (!token) return;
+                
+                // Check if we have a session ID
+                const sessionId = window.currentSessionId;
+                if (!sessionId) return;
+                
+                try {
+                    const response = await fetch('/api/game/consent', {
+                        headers: {
+                            'Authorization': `Bearer ${token}`
+                        }
+                    });
+                    
+                    const data = await response.json();
+                    
+                    // Only log behavioral data if user has consented
+                    if (data.success && data.data.consent && data.data.consent.behavioral_data_consent) {
+                        await fetch('/api/game/log-action', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'Authorization': `Bearer ${token}`
+                            },
+                            body: JSON.stringify({
+                                sessionId,
+                                actionType,
+                                actionValue,
+                                roundNumber: roundNumber || currentRound
+                            })
+                        });
+                    }
+                } catch (error) {
+                    console.error('Error logging user action:', error);
+                }
+            };
+            
+            // Add event listeners for game buttons
+            document.getElementById('add-tag-btn').addEventListener('click', function() {
+                window.addTag();
+                // Log the action if we have consent
+                window.logUserAction('add_tag', document.getElementById('tag-input').value);
+            });
+            
+            document.getElementById('hint-btn').addEventListener('click', function() {
+                window.getHint();
+                // Log the action if we have consent
+                window.logUserAction('get_hint', null);
+            });
+            
+            document.getElementById('submit-btn').addEventListener('click', function() {
+                window.submitTags();
+                // Log the action if we have consent
+                window.logUserAction('submit_tags', JSON.stringify(userTags));
+            });
+            
+            // Add event listener for tag input
+            document.getElementById('tag-input').addEventListener('keyup', function(event) {
+                if (event.key === 'Enter') {
+                    window.addTag();
+                } else {
+                    window.filterTags();
+                }
+            });
+        });
+    </script>
 </body>
 </html>
 
